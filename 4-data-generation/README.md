@@ -6,7 +6,7 @@
 
 Всего 1019 записей.
 
-# "Planes"
+# "Plane"
 Данные набрал из двух баз:
 * [Aircraft register data format](https://www.casa.gov.au/standard-page/data-files-field-definitions) 
 * [Aircraft Reference](https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download)
@@ -17,7 +17,7 @@
 
 Всего 1238 записей.
 
-# "Persons"
+# "Person"
 Из двух баз, доступных [на этом сайте](https://www.briandunning.com/sample-data/), по 500 записей в каждой, получил одну, состоящую из имен, фамилий, телефонных номеров. Даты дней рождения сгенерированы программно в скрипте.
 
 Всего 1000 записей.
