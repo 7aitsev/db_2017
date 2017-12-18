@@ -7,8 +7,7 @@ args = argsreader.getargs()
 import psycopg2 as pg_driver
 
 import psycopg2.pool as pool
-pg_pool = pool.SimpleConnectionPool(1, 2, user=args.user, password=args.password,
-        dbname=args.dbname, host=args.host)
+pg_pool = pool.SimpleConnectionPool(1, 2, user=args.user, dbname=args.dbname, host=args.host)
 
 
 db = pg_pool.getconn()

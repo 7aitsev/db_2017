@@ -16,8 +16,6 @@ def getargs():
                         help='the database name')
     parser.add_argument('--user', default='postgres',
                         help='PostgreSQL user name to connect as')
-    parser.add_argument('--password', default='',
-                        help='password to be used for authentication')
     parser.add_argument('--host', default='localhost',
                         help='name of host to connect to')
     return parser.parse_args()
