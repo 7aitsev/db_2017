@@ -18,17 +18,26 @@ all_tables = [t[0] for t in cur.fetchall()]
 
 import common
 import person
+import rating
 # Clear or populate table according to --clear option
 if args.table in ['all'] + all_tables:
     if not args.clear:
         if args.table == 'Person':
             person.populate(db, args.number)
+        elif args.table == 'Rating':
+            rating.populate(db, args.number)
         elif args.table == 'Plane':
             print 'Plane not implemented'
         elif args.table == 'Airport':
             print 'Ariport is going to be implemented'
     else:
-        person.clear(db)
+        if args.table == 'all':
+            person.clear(db)
+            rating.clear(db)
+        elif args.table == 'Person':
+            person.clear(db)
+        elif args.table == 'Rating':
+            rating.clear(db)
 else:
     print 'There is no such table: {}'.format(args.table)
 
