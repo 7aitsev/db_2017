@@ -23,24 +23,31 @@ def mkTupleFromRow(row):
     name = row[0] + ' ' + row[1]
     try:
         year = int(row[2])
-        if year < 1990:
-            year = datetime.date(1990, 1, 1)
+        if year < 1980:
+            year = datetime.date(randint(1980, 2017), 1, 1)
         else:
             year = datetime.date(year, 1, 1)
     except:
-        year = datetime.date(1990, 1, 1)
+        year = datetime.date(randint(1980, 2017), 1, 1)
     nseats = row[3].strip('0')
     try:
         nseats = int(nseats)
+        if nseats < 7:
+            nseats = randint(7, 300)
     except:
-        nseats = 128
+        nseats = randint(7, 300)
     service_life = randint(20, 50)
-    speed = randint(200, 800)
+    try:
+        speed = int(int(row[4].strip('0')) * 1.64)
+        if speed < 200:
+            speed = randint(200, 800)
+    except:
+        speed = randint(200, 800)
     return tuple([name, year, service_life, speed, nseats])
 
 def populate(db, limit):
-    if 1200 < limit or 0 >= limit:
-        print 'The number of rows should be in [1,1200]'
+    if 251 < limit or 0 >= limit:
+        print 'The number of rows should be in [1,251]'
         return
     rows = common.fetch_unused_rows(db, sys.modules[__name__], limit)
     count = len(rows)
