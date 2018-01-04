@@ -21,10 +21,13 @@ import person
 import rating
 import plane
 import airport
+import pilot
 # Clear or populate table according to --clear option
 if args.table in ['all'] + all_tables:
     if not args.clear:
-        if args.table == 'Person':
+        if 0 >= args.number:
+            print 'Rows count must be positive'
+        elif args.table == 'Person':
             person.populate(db, args.number)
         elif args.table == 'Rating':
             rating.populate(db, args.number)
@@ -32,10 +35,13 @@ if args.table in ['all'] + all_tables:
             plane.populate(db, args.number)
         elif args.table == 'Airport':
             airport.populate(db, args.number)
+        elif args.table == 'Pilot':
+            pilot.populate(db, args.number)
     else:
         if args.table == 'all':
             person.clear(db)
             rating.clear(db)
+            pilot.clear(db)
             plane.clear(db)
             aiport.clear(db)
         elif args.table == 'Person':
@@ -46,6 +52,8 @@ if args.table in ['all'] + all_tables:
             plane.clear(db)
         elif args.table == 'Airport':
             airport.clear(db)
+        elif args.table == 'Pilot':
+            pilot.clear(db)
 else:
     print 'There is no such table: {}'.format(args.table)
 

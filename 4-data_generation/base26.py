@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 from string import ascii_uppercase as alphabet
 
 base = 26

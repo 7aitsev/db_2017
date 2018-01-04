@@ -1,6 +1,7 @@
 #encoding: utf-8
 
 import psycopg2 as pg_driver
+from psycopg2.extras import execute_values
 
 def clear(db, table):
     cur = db.cursor()
@@ -22,31 +23,49 @@ def clear(db, table):
         print e.pgerror
         db.rollback() 
 
+def select_all_rows(db, query):
+    dbrows = []
+    try:
+        c = db.cursor()
+        c.execute(query)
+        dbrows = c.fetchall()
+    except pg_driver.Error as e:
+        pass
+    return dbrows
+
 def is_in_db(row, dbrows, compare_rows):
-    print row
     for dbrow in dbrows:
-        print dbrow
         if compare_rows(row, dbrow):
             return True
     return False
 
-def fetch_unused_rows(db, table, compare_rows, limit):
-    import csv
-    with open(table.filepath, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        keys = reader.next() # get the header
-        out = []
+def fetch_unused_rows(db, table, limit):
+    out = []
+    try:
+        dbrows = select_all_rows(db, table.select_all_query)
+        count = 0
+        while count < limit and table.hasNext():
+            row = table.next()
+            if not is_in_db(row, dbrows, table.compare_rows):
+                out.append(row)
+                count += 1
+    except pg_driver.Error as e:
+        print e.pgerror
+        db.rollback()
+    return out
+
+def insert_rows(db, table, rows):
+    count = len(rows)
+    if 0 != count:
         try:
-            dbrows = table.selectAllRows(db)
-            count = 0
-            for row in reader:
-                if count >= limit:
-                    break
-                tup = table.mkTupleFromRow(row)
-                if not is_in_db(tup, dbrows, compare_rows):
-                    out += [tup]
-                    count += 1
+            c = db.cursor()
+            execute_values(c, table.insert_query, rows)
+            db.commit()
         except pg_driver.Error as e:
             print e.pgerror
             db.rollback()
-        return out
+            return
+        # execute_values does not give right cursor.rowcount (issue #540)
+        print 'Inserted {} rows'.format(count)
+    else:
+        print 'All records for "{}" are exhausted'.format(table.__name__)
