@@ -24,14 +24,12 @@ def clear(db, table):
         db.rollback() 
 
 def select_all_rows(db, query):
-    dbrows = []
     try:
         c = db.cursor()
         c.execute(query)
-        dbrows = c.fetchall()
+        return c.fetchall()
     except pg_driver.Error as e:
         pass
-    return dbrows
 
 def is_in_db(row, dbrows, compare_rows):
     for dbrow in dbrows:
@@ -64,8 +62,23 @@ def insert_rows(db, table, rows):
         except pg_driver.Error as e:
             print e.pgerror
             db.rollback()
-            return
+            return -1
         # execute_values does not give right cursor.rowcount (issue #540)
-        print 'Inserted {} rows'.format(count)
+        print 'Inserted {} rows to {}'.format(count, table.__name__)
+        return count
     else:
         print 'All records for "{}" are exhausted'.format(table.__name__)
+        return 0
+
+def populate_interactive(db, table):
+    while True:
+        print 'Enter rows count to insert into "{}":'.format(table.__name__),
+        try:
+            count = int(input())
+        except ValueError:
+            print 'Bad number'
+            continue
+        if 0 >= count or table.limit < count:
+            print 'The number of rows must be in [1,{}]'.format(table.limit)
+            continue
+        return table.populate(db, count)

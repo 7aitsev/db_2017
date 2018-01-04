@@ -10,6 +10,7 @@ import common
 filepath = 'persons/persons.csv'
 select_all_query = 'SELECT * FROM "Person";'
 insert_query = 'INSERT INTO "Person" (name, bday, phone) VALUES %s;'
+limit = float('inf')
 
 start = datetime.date(1910, 1, 1)
 end = datetime.date(2018, 1, 1)
@@ -33,12 +34,12 @@ def next():
 def hasNext():
     return True
 
-def populate(db, limit):
-    if 100000 < limit or 0 >= limit:
-        print 'The number of rows should be in [1,100000]'
-        return
-    rows = common.fetch_unused_rows(db, sys.modules[__name__], limit)
-    common.insert_rows(db, sys.modules[__name__], rows)
+def populate(db, count):
+    if limit < count:
+        print 'The number of rows should be in [1,{}]'.format(table.limit)
+        return -1
+    rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
+    return common.insert_rows(db, sys.modules[__name__], rows)
 
 def clear(db):
     common.clear(db, 'Pilot')

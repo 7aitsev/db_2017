@@ -9,6 +9,7 @@ import common
 filepath = 'airports/airports.csv'
 select_all_query = 'SELECT * FROM "Airport";'
 insert_query = 'INSERT INTO "Airport" (name, city, lat, lon, distance, code) VALUES %s;'
+limit = 951
 
 def create_new_row(row):
 # "name","latitude_deg","longitude_deg","municipality"
@@ -39,16 +40,16 @@ def hasNext():
         return False
     return True
 
-def populate(db, limit):
-    if 951 < limit:
-        print 'The number of rows must be in [1,951]'
-        return
+def populate(db, count):
+    if limit < count:
+        print 'The number of rows must be in [1,{}]'.format(limit)
+        return -1
     import csv
     with open(filepath, 'r') as csvfile:
         next.reader = csv.reader(csvfile)
         keys = next.reader.next() # skip the header
-        rows = common.fetch_unused_rows(db, sys.modules[__name__], limit)
-        common.insert_rows(db, sys.modules[__name__], rows)
+        rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
+        return common.insert_rows(db, sys.modules[__name__], rows)
 
 def clear(db):
     #import flight
