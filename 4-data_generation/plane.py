@@ -14,7 +14,7 @@ def selectAllRows(db):
     try:
         c = db.cursor()
         c.execute('SELECT * FROM "Plane";')
-        dbrows = [tuple([r[1], str(r[2]), r[3], r[4], r[5]]) for r in c.fetchall()]
+        dbrows = [tuple([r[1], r[2], r[3], r[4], r[5]]) for r in c.fetchall()]
     except pg_driver.Error as e:
         pass
     return dbrows
@@ -45,11 +45,14 @@ def mkTupleFromRow(row):
         speed = randint(200, 800)
     return tuple([name, year, service_life, speed, nseats])
 
+def compare_rows(a, b):
+    return a[0] == b[0] and a[1] == b[1]
+
 def populate(db, limit):
     if 251 < limit or 0 >= limit:
         print 'The number of rows should be in [1,251]'
         return
-    rows = common.fetch_unused_rows(db, sys.modules[__name__], limit)
+    rows = common.fetch_unused_rows(db, sys.modules[__name__], compare_rows, limit)
     count = len(rows)
     if 0 != count:
         insert_query = 'INSERT INTO "Plane" (name, year, service_life, speed, capacity) VALUES %s'

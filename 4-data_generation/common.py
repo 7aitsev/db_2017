@@ -22,7 +22,15 @@ def clear(db, table):
         print e.pgerror
         db.rollback() 
 
-def fetch_unused_rows(db, table, limit):
+def is_in_db(row, dbrows, compare_rows):
+    print row
+    for dbrow in dbrows:
+        print dbrow
+        if compare_rows(row, dbrow):
+            return True
+    return False
+
+def fetch_unused_rows(db, table, compare_rows, limit):
     import csv
     with open(table.filepath, 'r') as csvfile:
         reader = csv.reader(csvfile)
@@ -35,7 +43,7 @@ def fetch_unused_rows(db, table, limit):
                 if count >= limit:
                     break
                 tup = table.mkTupleFromRow(row)
-                if tup not in dbrows:
+                if not is_in_db(tup, dbrows, compare_rows):
                     out += [tup]
                     count += 1
         except pg_driver.Error as e:
