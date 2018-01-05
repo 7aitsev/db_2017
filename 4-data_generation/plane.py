@@ -32,9 +32,9 @@ def create_new_row(row):
     try:
         speed = int(int(row[4].strip('0')) * 1.64)
         if speed < 200:
-            speed = randint(200, 800)
+            speed = randint(300, 800)
     except:
-        speed = randint(200, 800)
+        speed = randint(300, 800)
     return [name, year, service_life, speed, nseats]
 
 def compare_rows(a, b):
