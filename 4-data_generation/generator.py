@@ -22,6 +22,7 @@ import rating
 import plane
 import airport
 import pilot
+import route
 # Clear or populate table according to --clear option
 if args.table in ['all'] + all_tables:
     if not args.clear:
@@ -37,6 +38,8 @@ if args.table in ['all'] + all_tables:
             airport.populate(db, args.number)
         elif args.table == 'Pilot':
             pilot.populate(db, args.number)
+        elif args.table == 'Route':
+            route.populate(db, args.number)
     else:
         if args.table == 'all':
             person.clear(db)
@@ -44,6 +47,7 @@ if args.table in ['all'] + all_tables:
             pilot.clear(db)
             plane.clear(db)
             aiport.clear(db)
+            route.clear(db)
         elif args.table == 'Person':
             person.clear(db)
         elif args.table == 'Rating':
@@ -54,6 +58,8 @@ if args.table in ['all'] + all_tables:
             airport.clear(db)
         elif args.table == 'Pilot':
             pilot.clear(db)
+        elif args.table == 'Route':
+            route.clear(db)
 else:
     print 'There is no such table: {}'.format(args.table)
 
