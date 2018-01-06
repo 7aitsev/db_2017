@@ -16,15 +16,13 @@ insert_query = 'INSERT INTO "Flight" (pilot_id, plane_id, flight_date, flight_du
 limit = float('inf')
 
 def generate_flight_date(route_row):
-    introduced = route_row[-3] # date -> date
+    introduced = datetime.datetime.combine(route_row[-3], datetime.time(0, 0)) # date -> date -> datetime
     freq = route_row[-4] # interval -> timedelta
     finished = route_row[-2] # date -> date
     if finished == None:
         finished = datetime.date(2018, 1, 1)
-    max_times = (finished - introduced).total_seconds() / freq.total_seconds()
-    d = freq * randint(0, int(max_times)) + introduced 
-    t = datetime.time(0, 0)
-    return datetime.datetime.combine(d, t) # datetime -> timestamp
+    max_times = (finished - introduced.date()).total_seconds() / freq.total_seconds()
+    return freq * randint(0, int(max_times)) + introduced  # datetime -> timestamp
 
 def generate_flight_duration(route_row, plane_row):
     distance = route_row[-1]
@@ -61,7 +59,7 @@ def populate(db, count):
         next.route_rows = common.check_availability(db, route, select_all_from_route_and_airport_query)
         next.pilot_rows = common.check_availability(db, pilot)
         next.plane_rows = common.check_availability(db, plane)
-    except pg_driver.Error as e: # todo: catch exception when rv <= 0
+    except pg_driver.Error as e:
         print e.pgerror
         db.rollback()
         return -1

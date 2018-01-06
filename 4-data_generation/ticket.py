@@ -19,10 +19,11 @@ def generate_price(flight_date, flight_duration):
     h = float(flight_duration.seconds) / 3600
     return int(generate_price.price_per_hour * generate_price.factors[w] * h)
 generate_price.factors = [2, 1.6, 1.2, 1, 1.5, 1.8, 1.9]
-generate_price.price_per_hour = 2000
+generate_price.price_per_hour = 2000.0
 
 def compare_rows(a, b):
-    return a[-1] == b[-1] and a[-5] == b[-5] and a[-4] == b[-4]
+    # flight_id and seat
+    return a[-5] == b[-5] and a[-4] == b[-4]
 
 def next():
     flight_row = common.get_any_row(next.flight_rows)
