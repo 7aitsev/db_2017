@@ -3,6 +3,7 @@
 import psycopg2 as pg_driver
 import sys
 from random import randint
+from datetime import date
 
 import common
 import person
@@ -18,14 +19,21 @@ def compare_rows(a, b):
 def next():
     person_id = next.person_rows[next.i][0]
     rating_id = next.rating_rows[randint(0, len(next.rating_rows) - 1)][0]
-    next.i += 1
     return [person_id, rating_id]
 next.person_rows = []
+next.person_rows_len = 0
 next.rating_rows = []
 next.i = 0
+next.min_age = date(date.today().year - 18,
+                    date.today().month, date.today().day)
 
 def hasNext():
-    return len(next.person_rows) != next.i
+    bday = next.min_age
+    while bday >= next.min_age and next.i != next.person_rows_len:
+        person_row = next.person_rows[next.i]
+        next.i += 1
+        bday = person_row[2]
+    return next.person_rows_len != next.i
 
 def populate(db, count):
     try:
@@ -40,16 +48,17 @@ def populate(db, count):
         # fetch all records from "Person" and decide populate the table or not
         next.person_rows = common.select_all_rows(db, person.select_all_query)
         rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
-        person_rows_count = len(rows)
-        if person_rows_count < count:
-            print 'Unused rows in "Person": {}'.format(person_rows_count)
+        next.person_rows_len = len(rows)
+        if next.person_rows_len < count:
+            print 'Unused rows in "Person": {}'.format(next.person_rows_len)
             rv = common.populate_interactive(db, person)
-            person_rows_count += rv
-            if person_rows_count < count:
+            next.person_rows_len += rv
+            if next.person_rows_len < count:
                 print '"Person" does not have enough records'
                 return -1
             next.i = 0
             next.person_rows = common.select_all_rows(db, person.select_all_query)
+            next.person_rows_len = len(next.person_rows)
             rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
     except pg_driver.Error as e:
         print e.pgerror
@@ -57,6 +66,6 @@ def populate(db, count):
     return common.insert_rows(db, sys.modules[__name__], rows)
 
 def clear(db):
-    #import flight
-    #flight.clear(db)
+    common.clear(db, 'Ticket')
+    common.clear(db, 'Flight')
     common.clear(db, 'Pilot')
