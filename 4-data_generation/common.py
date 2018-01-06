@@ -93,8 +93,7 @@ def check_availability(db, table, use_this_query=None):
             print '"{}" is empty'.format(table.__name__)
             rv = populate_interactive(db, table)
             if 0 >= rv:
-                print 'Not enough rows in "{}" to fulfil the operation'.format(table.__name__)
-                return None # todo: replace to exception
+                raise pg_driver.Error('Not enough rows in "{}" to fulfil the operation'.format(table.__name__))
         query = table.select_all_query if use_this_query == None else use_this_query
         return select_all_rows(db, query)
     except pg_driver.Error as e:
