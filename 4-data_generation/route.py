@@ -55,7 +55,3 @@ def populate(db, count):
     # assume "Airport" has some data
     rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
     return common.insert_rows(db, sys.modules[__name__], rows)
-
-def clear(db):
-    common.clear(db, 'Airport')
-    common.clear(db, 'Route')

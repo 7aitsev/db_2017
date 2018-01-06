@@ -50,8 +50,3 @@ def populate(db, count):
         keys = next.reader.next() # skip the header
         rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
         return common.insert_rows(db, sys.modules[__name__], rows)
-
-def clear(db):
-    #import flight
-    #flight.clear(db)
-    common.clear(db, 'Airport')

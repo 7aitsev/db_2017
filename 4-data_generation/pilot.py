@@ -47,13 +47,14 @@ def populate(db, count):
             next.rating_rows = common.select_all_rows(db, rating.select_all_query)
         # fetch all records from "Person" and decide populate the table or not
         next.person_rows = common.select_all_rows(db, person.select_all_query)
+        next.person_rows_len = len(next.person_rows)
         rows = common.fetch_unused_rows(db, sys.modules[__name__], count)
-        next.person_rows_len = len(rows)
-        if next.person_rows_len < count:
-            print 'Unused rows in "Person": {}'.format(next.person_rows_len)
+        person_rows_count = len(rows)
+        if person_rows_count < count:
+            print 'Unused rows in "Person": {}'.format(person_rows_count)
             rv = common.populate_interactive(db, person)
-            next.person_rows_len += rv
-            if next.person_rows_len < count:
+            person_rows_count += rv
+            if person_rows_count < count:
                 print '"Person" does not have enough records'
                 return -1
             next.i = 0
@@ -64,8 +65,3 @@ def populate(db, count):
         print e.pgerror
         return -1
     return common.insert_rows(db, sys.modules[__name__], rows)
-
-def clear(db):
-    common.clear(db, 'Ticket')
-    common.clear(db, 'Flight')
-    common.clear(db, 'Pilot')

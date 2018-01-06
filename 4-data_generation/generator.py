@@ -34,62 +34,40 @@ args = argsreader.getargs()
 db = init_connection(args)
 all_tables = select_all_tables(db)
 
-import common
-import person
-import rating
-import plane
-import airport
-import pilot
-import route
-import flight
-import ticket
 # Clear or populate table according to --clear option
 if args.table in all_tables:
     if not args.clear:
         if 0 >= args.number and args.table != 'All':
             print 'Rows count must be positive'
-        elif args.table == 'Person':
-            person.populate(db, args.number)
-        elif args.table == 'Rating':
-            rating.populate(db, args.number)
-        elif args.table == 'Plane':
-            plane.populate(db, args.number)
-        elif args.table == 'Airport':
-            airport.populate(db, args.number)
-        elif args.table == 'Pilot':
-            pilot.populate(db, args.number)
-        elif args.table == 'Route':
-            route.populate(db, args.number)
-        elif args.table == 'Flight':
-            flight.populate(db, args.number)
-        elif args.table == 'Ticket' or args.table == 'All':
-            ticket.populate(db, args.number)
+        elif args.table == 'All':
+            if None != args.number:
+                print '-n (--number) option is being ignored'
+            count = 0
+            while 0 >= count:
+                print 'Enter rows count for "Ticket":',
+                try:
+                    count = int(input())
+                except ValueError:
+                    print 'Bad number'
+                    continue
+                if 0 >= count:
+                    print 'Number of rows must be positive'
+                    continue
+            import ticket
+            ticket.populate(db, count)
+        else:
+            import importlib
+            t = importlib.import_module(args.table.lower())
+            t.populate(db, args.number)
     else:
+        import common
         if args.table == 'All':
-            person.clear(db)
-            rating.clear(db)
-            pilot.clear(db)
-            plane.clear(db)
-            airport.clear(db)
-            route.clear(db)
-            flight.clear(db)
-            ticket.clear(db)
-        elif args.table == 'Person':
-            person.clear(db)
-        elif args.table == 'Rating':
-            rating.clear(db)
-        elif args.table == 'Plane':
-            plane.clear(db)
-        elif args.table == 'Airport':
-            airport.clear(db)
-        elif args.table == 'Pilot':
-            pilot.clear(db)
-        elif args.table == 'Route':
-            route.clear(db)
-        elif args.table == 'Flight':
-            flight.clear(db)
-        elif args.table == 'Ticket':
-            ticket.clear(db)
+            common.clear(db, 'Airport')
+            common.clear(db, 'Plane')
+            common.clear(db, 'Person')
+            common.clear(db, 'Rating')
+        else:
+            common.clear(db, args.table)
 else:
     print 'There is no such table: {}'.format(args.table)
     close_connection_and_exit(1)
