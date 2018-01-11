@@ -15,12 +15,12 @@ def create_new_row(row):
     name = row[0] + ' ' + row[1]
     try:
         year = int(row[2])
-        if year < 1980:
-            year = datetime.date(randint(1980, 2017), 1, 1)
+        if year < 1990:
+            year = datetime.date(randint(1990, 2017), 1, 1)
         else:
             year = datetime.date(year, 1, 1)
     except:
-        year = datetime.date(randint(1980, 2017), 1, 1)
+        year = datetime.date(randint(1990, 2017), 1, 1)
     nseats = row[3].strip('0')
     try:
         nseats = int(nseats)

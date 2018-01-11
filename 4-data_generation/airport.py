@@ -3,13 +3,32 @@
 import sys
 from random import randint
 
-import base26
+from string import ascii_uppercase as alphabet
 import common
 
 filepath = 'airports/airports.csv'
 select_all_query = 'SELECT * FROM "Airport";'
 insert_query = 'INSERT INTO "Airport" (name, city, lat, lon, distance, code) VALUES %s;'
 limit = 951
+
+def toCode(num):
+    if toCode.base**toCode.len_lim - 1 < num or 0 > num:
+        print 'Bad number'
+        return ''
+    digits = []
+    while 3 > len(digits):
+        if 0 == num:
+            digits.append(0)
+        else:
+            digits.append(num % toCode.base)
+            num //= toCode.base
+
+    code = ''
+    for c in reversed(digits):
+        code += alphabet[c]
+    return code
+toCode.base = 26
+toCode.len_lim = 3
 
 def create_new_row(row):
 # "name","latitude_deg","longitude_deg","municipality"
@@ -19,7 +38,7 @@ def create_new_row(row):
         city = "Unknown"
     lat = row[1]
     lon = row[2]
-    code = base26.toCode(create_new_row.code_idx)
+    code = toCode(create_new_row.code_idx)
     create_new_row.code_idx += 1
     distance = randint(100, 9000)
     return [name, city, lat, lon, distance, code]

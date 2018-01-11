@@ -99,5 +99,5 @@ def check_availability(db, table, use_this_query=None):
     except pg_driver.Error as e:
         pass
 
-def get_any_row(row):
-    return row[randint(0, len(row) - 1)]
+def get_any_row(rows):
+    return rows[randint(0, len(rows) - 1)]

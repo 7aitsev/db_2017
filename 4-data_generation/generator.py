@@ -28,8 +28,8 @@ def select_all_tables(db):
         close_connection_and_exit(1)
     return tables
 
-import argsreader
-args = argsreader.getargs()
+import argreader
+args = argreader.getargs()
 
 db = init_connection(args)
 all_tables = select_all_tables(db)
