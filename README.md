@@ -1,1 +1,1 @@
-Class projects for the [Database course](http://gitlab.icc.spbstu.ru/db-2017/common/wikis/home).
+Class projects for a Database Course. Checkout [Wiki page](https://github.com/7aitsev/db_2017/wiki).
